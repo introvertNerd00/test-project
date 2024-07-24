@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 interface LoginResponse {
     success: boolean;
     message: string;
+    email: string;
 }
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState('');
+    const [usernameOrEmail, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -15,20 +16,20 @@ const LoginPage: React.FC = () => {
     const handleLogin = async () => {
         setError('');
         setLoading(true);
-
         try {
             // Make API call to login endpoint
-            const response = await fetch('', {
+            const response = await fetch('https://localhost:7186/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ usernameOrEmail, password }),
             });
 
             const data: LoginResponse = await response.json();
-
-            if (data.success) {
+            const {email:string}=data;
+            
+            if (data.email) {
                 // Login successful, redirect to dashboard or home page
                 // Replace the following line with your desired redirection logic
                 window.location.href = '/';
@@ -50,7 +51,7 @@ const LoginPage: React.FC = () => {
                 <input
                     type="email"
                     placeholder="Email"
-                    value={email}
+                    value={usernameOrEmail}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded mb-2 text-black"
                 />
